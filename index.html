@@ -45,7 +45,7 @@
     <input type="text" id="school" placeholder="Город / Школа (например, НИШ Павлодар)">
     <input type="text" id="year" placeholder="Год выпуска (например, 20')">
     
-    <p style="text-align:left; font-size:14px; color:#666; margin-bottom:5px; font-family:sans-serif;">Загрузите свое foto:</p>
+    <p style="text-align:left; font-size:14px; color:#666; margin-bottom:5px; font-family:sans-serif;">Загрузите свое фото:</p>
     <input type="file" id="upload" accept="image/*">
     
     <div class="img-container">
@@ -99,74 +99,80 @@
         canvas.height = 1920;
         const ctx = canvas.getContext('2d');
 
-        // 1. Черный фон
-        ctx.fillStyle = '#090909';
-        ctx.fillRect(0, 0, 1080, 1920);
+        // Создаем объект для фоновой картинки 1.png
+        const bgImage = new Image();
+        bgImage.src = '1.png';
 
-        // 2. Золотая линия сверху
-        ctx.strokeStyle = '#c8a94a';
-        ctx.lineWidth = 4;
-        ctx.beginPath(); ctx.moveTo(140, 180); ctx.lineTo(940, 180); ctx.stroke();
+        bgImage.onload = function() {
+            // 1. Рисуем фоновое изображение 1.png на весь холст
+            ctx.drawImage(bgImage, 0, 0, 1080, 1920);
 
-        // 3. Заголовок бала на самом верху
-        ctx.fillStyle = '#c8a94a';
-        ctx.textAlign = 'center';
-        ctx.font = 'italic 46px "Times New Roman", Georgia, serif';
-        ctx.fillText('Annual NIS Alumni', 540, 110);
-        ctx.fillText('Fundraising Ball 2026', 540, 160);
+            // 2. Золотая декоративная линия сверху
+            ctx.strokeStyle = '#c8a94a';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(140, 180); ctx.lineTo(940, 180); ctx.stroke();
 
-        // 4. Отрисовка квадратного фото пользователя
-        const croppedCanvas = cropper.getCroppedCanvas({ width: 800, height: 800 });
-        ctx.drawImage(croppedCanvas, 140, 240, 800, 800);
+            // 3. Заголовок бала на самом верху
+            ctx.fillStyle = '#c8a94a';
+            ctx.textAlign = 'center';
+            ctx.font = 'italic 46px "Times New Roman", Georgia, serif';
+            ctx.fillText('Annual NIS Alumni', 540, 110);
+            ctx.fillText('Fundraising Ball 2026', 540, 160);
 
-        // 5. Тонкая золотая рамка вокруг фото
-        ctx.strokeStyle = '#c8a94a';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(140, 240, 800, 800);
+            // 4. Отрисовка квадратного фото пользователя
+            const croppedCanvas = cropper.getCroppedCanvas({ width: 800, height: 800 });
+            ctx.drawImage(croppedCanvas, 140, 240, 800, 800);
 
-        // --- ТЕПЕРЬ ЛИЧНЫЕ ДАННЫЕ ИДУТ ПЕРВЫМИ (И ОНИ БОЛЬШЕ) ---
-        
-        // 6. Выводим ФИО (сделали крупнее — 56px вместо 46px)
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 56px "Times New Roman", Georgia, serif';
-        ctx.fillText(fio.toUpperCase(), 540, 1140);
+            // 5. Тонкая золотая рамка вокруг фото челика
+            ctx.strokeStyle = '#c8a94a';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(140, 240, 800, 800);
 
-        // Род деятельности (чуть крупнее и четче)
-        ctx.fillStyle = '#b5b5b5'; 
-        ctx.font = 'italic 38px "Times New Roman", Georgia, serif';
-        ctx.fillText(job, 540, 1205);
+            // 6. Выводим ФИО пользователя
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 56px "Times New Roman", Georgia, serif';
+            ctx.fillText(fio.toUpperCase(), 540, 1140);
 
-        // Школа и Год (крупным золотым цветом #c8a94a)
-        ctx.fillStyle = '#c8a94a'; 
-        ctx.font = 'bold 46px "Times New Roman", Georgia, serif';
-        ctx.fillText(`${school} '${year}`, 540, 1280);
+            // Род деятельности
+            ctx.fillStyle = '#b5b5b5'; 
+            ctx.font = 'italic 38px "Times New Roman", Georgia, serif';
+            ctx.fillText(job, 540, 1205);
 
-        // Тонкий разделитель
-        ctx.strokeStyle = '#222222';
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(200, 1340); ctx.lineTo(880, 1340); ctx.stroke();
+            // Школа и Год (золотой цвет #c8a94a)
+            ctx.fillStyle = '#c8a94a'; 
+            ctx.font = 'bold 46px "Times New Roman", Georgia, serif';
+            ctx.fillText(`${school} '${year}`, 540, 1280);
 
-        // --- ФРАЗА "I AM ATTENDING..." ТЕПЕРЬ ВНИЗУ И МЕНЬШЕ ---
+            // Тонкий разделитель снизу
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(200, 1340); ctx.lineTo(880, 1340); ctx.stroke();
 
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 42px "Times New Roman", Georgia, serif';
-        ctx.fillText('I AM ATTENDING', 540, 1430);
-        
-        ctx.fillStyle = '#c8a94a'; // Золотой
-        ctx.font = 'bold 50px "Times New Roman", Georgia, serif';
-        ctx.fillText('ALUMNI NIS', 540, 1500);
-        ctx.fillText('FUNDRAISING', 540, 1570);
-        ctx.fillText('BALL 2026!', 540, 1640);
+            // 7. Фраза "I AM ATTENDING..." пониже
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 42px "Times New Roman", Georgia, serif';
+            ctx.fillText('I AM ATTENDING', 540, 1430);
+            
+            ctx.fillStyle = '#c8a94a'; 
+            ctx.font = 'bold 50px "Times New Roman", Georgia, serif';
+            ctx.fillText('ALUMNI NIS', 540, 1500);
+            ctx.fillText('FUNDRAISING', 540, 1570);
+            ctx.fillText('BALL 2026!', 540, 1640);
 
-        // Водяной знак инсты в самый низ
-        ctx.fillStyle = '#444444';
-        ctx.font = '30px sans-serif';
-        ctx.fillText('@alumni.ball', 540, 1830);
+            // Водяной знак инсты в самый низ
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.font = '30px sans-serif';
+            ctx.fillText('@alumni.ball', 540, 1830);
 
-        // Вывод готовой картинки в модалку
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-        document.getElementById('result-image').src = dataUrl;
-        document.getElementById('result-modal').style.display = 'flex';
+            // Вывод готовой картинки в модальное окно
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            document.getElementById('result-image').src = dataUrl;
+            document.getElementById('result-modal').style.display = 'flex';
+        };
+
+        bgImage.onerror = function() {
+            alert('Ошибка: Не удалось загрузить фоновое изображение "1.png". Убедись, что ты добавила этот файл в репозиторий GitHub.');
+        };
     });
 
     function closeModal() {
