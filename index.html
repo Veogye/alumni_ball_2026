@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Fundraising Ball 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background-color: #0a0a0a; color: #fff;
+            font-family: 'Times New Roman', Times, serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; box-sizing: border-box;
+        }
+        .container { width: 100%; max-width: 400px; padding: 25px; text-align: center; box-sizing: border-box; }
+        h2 { color: #c8a94a; margin-bottom: 25px; font-weight: normal; letter-spacing: 1px; }
+        input {
+            width: 100%; padding: 14px; margin: 10px 0;
+            background: #1a1a1a; border: 1px solid #333; border-radius: 6px;
+            color: #fff; font-size: 16px; box-sizing: border-box;
+        }
+        input:focus { border-color: #c8a94a; outline: none; }
+        .btn {
+            width: 100%; padding: 15px; margin-top: 20px;
+            background: #c8a94a; border: none; border-radius: 6px;
+            color: #000; font-size: 16px; font-weight: bold; cursor: pointer; letter-spacing: 1px;
+        }
+        .img-container { max-width: 100%; max-height: 300px; margin-top: 15px; display: none; border: 1px solid #333; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 100; justify-content: center; align-items: center; flex-direction: column;
+        }
+        .modal img { max-width: 85%; max-height: 80vh; border: 1px solid #333; }
+        .modal p { color: #888; font-size: 14px; margin-top: 15px; font-family: sans-serif; }
+        .close-btn { background: #fff; color: #000; padding: 8px 20px; border-radius: 20px; margin-bottom: 15px; cursor: pointer; font-family: sans-serif; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="form-step">
+    <h2>ALUMNI BALL 2026</h2>
+    <input type="text" id="fio" placeholder="Имя и Фамилия">
+    <input type="text" id="job" placeholder="Род деятельности (Студент, IT и т.д.)">
+    <input type="text" id="school" placeholder="Город / Школа (например, НИШ Павлодар)">
+    <input type="text" id="year" placeholder="Год выпуска (например, 20')">
+    
+    <p style="text-align:left; font-size:14px; color:#666; margin-bottom:5px; font-family:sans-serif;">Загрузите свое foto:</p>
+    <input type="file" id="upload" accept="image/*">
+    
+    <div class="img-container">
+        <img id="image-to-crop">
+    </div>
+    
+    <button class="btn" id="generate-btn">СОЗДАТЬ КАРТОЧКУ</button>
+</div>
+
+<div class="modal" id="result-modal">
+    <div class="close-btn" onclick="closeModal()">← Изменить данные</div>
+    <img id="result-image" src="" alt="Твоя карточка">
+    <p>📱 Зажмите пальцем картинку, чтобы сохранить её</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script>
+    let cropper;
+    const upload = document.getElementById('upload');
+    const imageToCrop = document.getElementById('image-to-crop');
+    const imgContainer = document.querySelector('.img-container');
+
+    upload.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                imageToCrop.src = event.target.result;
+                imgContainer.style.display = 'block';
+                if (cropper) { cropper.destroy(); }
+                cropper = new Cropper(imageToCrop, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1
+                });
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    });
+
+    document.getElementById('generate-btn').addEventListener('click', () => {
+        const fio = document.getElementById('fio').value || '';
+        const job = document.getElementById('job').value || '';
+        const school = document.getElementById('school').value || '';
+        const year = document.getElementById('year').value || '';
+        
+        if(!cropper) { alert('Пожалуйста, загрузите фотографию!'); return; }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1920;
+        const ctx = canvas.getContext('2d');
+
+        // 1. Черный фон
+        ctx.fillStyle = '#090909';
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        // 2. Золотая линия сверху
+        ctx.strokeStyle = '#c8a94a';
+        ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(140, 180); ctx.lineTo(940, 180); ctx.stroke();
+
+        // 3. Заголовок бала на самом верху
+        ctx.fillStyle = '#c8a94a';
+        ctx.textAlign = 'center';
+        ctx.font = 'italic 46px "Times New Roman", Georgia, serif';
+        ctx.fillText('Annual NIS Alumni', 540, 110);
+        ctx.fillText('Fundraising Ball 2026', 540, 160);
+
+        // 4. Отрисовка квадратного фото пользователя
+        const croppedCanvas = cropper.getCroppedCanvas({ width: 800, height: 800 });
+        ctx.drawImage(croppedCanvas, 140, 240, 800, 800);
+
+        // 5. Тонкая золотая рамка вокруг фото
+        ctx.strokeStyle = '#c8a94a';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(140, 240, 800, 800);
+
+        // --- ТЕПЕРЬ ЛИЧНЫЕ ДАННЫЕ ИДУТ ПЕРВЫМИ (И ОНИ БОЛЬШЕ) ---
+        
+        // 6. Выводим ФИО (сделали крупнее — 56px вместо 46px)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 56px "Times New Roman", Georgia, serif';
+        ctx.fillText(fio.toUpperCase(), 540, 1140);
+
+        // Род деятельности (чуть крупнее и четче)
+        ctx.fillStyle = '#b5b5b5'; 
+        ctx.font = 'italic 38px "Times New Roman", Georgia, serif';
+        ctx.fillText(job, 540, 1205);
+
+        // Школа и Год (крупным золотым цветом #c8a94a)
+        ctx.fillStyle = '#c8a94a'; 
+        ctx.font = 'bold 46px "Times New Roman", Georgia, serif';
+        ctx.fillText(`${school} '${year}`, 540, 1280);
+
+        // Тонкий разделитель
+        ctx.strokeStyle = '#222222';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(200, 1340); ctx.lineTo(880, 1340); ctx.stroke();
+
+        // --- ФРАЗА "I AM ATTENDING..." ТЕПЕРЬ ВНИЗУ И МЕНЬШЕ ---
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 42px "Times New Roman", Georgia, serif';
+        ctx.fillText('I AM ATTENDING', 540, 1430);
+        
+        ctx.fillStyle = '#c8a94a'; // Золотой
+        ctx.font = 'bold 50px "Times New Roman", Georgia, serif';
+        ctx.fillText('ALUMNI NIS', 540, 1500);
+        ctx.fillText('FUNDRAISING', 540, 1570);
+        ctx.fillText('BALL 2026!', 540, 1640);
+
+        // Водяной знак инсты в самый низ
+        ctx.fillStyle = '#444444';
+        ctx.font = '30px sans-serif';
+        ctx.fillText('@alumni.ball', 540, 1830);
+
+        // Вывод готовой картинки в модалку
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+        document.getElementById('result-image').src = dataUrl;
+        document.getElementById('result-modal').style.display = 'flex';
+    });
+
+    function closeModal() {
+        document.getElementById('result-modal').style.display = 'none';
+    }
+</script>
+</body>
+</html>
