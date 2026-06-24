@@ -40,10 +40,10 @@
 
 <div class="container" id="form-step">
     <h2>ALUMNI BALL 2026</h2>
-    <input type="text" id="fio" placeholder="Имя и Фамилия">
-    <input type="text" id="job" placeholder="Род деятельности (Студент, IT и т.д.)">
-    <input type="text" id="school" placeholder="Город / Школа (например, НИШ Павлодар)">
-    <input type="text" id="year" placeholder="Год выпуска (например, 20')">
+    <input type="text" id="fio" placeholder="Аты-жөніңіз">
+    <input type="text" id="job" placeholder="Оқу/жұмыс орныңыз">
+    <input type="text" id="school" placeholder="Зияткерлік мектебіңіз (мысалы - NIS Көкшетау)">
+    <input type="text" id="year" placeholder="Оқуды аяқтаған жыл (мысалы - '2021)">
     
     <p style="text-align:left; font-size:14px; color:#666; margin-bottom:5px; font-family:sans-serif;">Загрузите свое фото:</p>
     <input type="file" id="upload" accept="image/*">
@@ -52,13 +52,13 @@
         <img id="image-to-crop">
     </div>
     
-    <button class="btn" id="generate-btn">СОЗДАТЬ КАРТОЧКУ</button>
+    <button class="btn" id="generate-btn">Карточканы жасау</button>
 </div>
 
 <div class="modal" id="result-modal">
     <div class="close-btn" onclick="closeModal()">← Изменить данные</div>
-    <img id="result-image" src="" alt="Твоя карточка">
-    <p>📱 Зажмите пальцем картинку, чтобы сохранить её</p>
+    <img id="result-image" src="" alt="Сенің карточкаң">
+    <p>📱 Суретті сақтау үшін суретті басып тұрыңыз </p>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -92,7 +92,7 @@
         const school = document.getElementById('school').value || '';
         const year = document.getElementById('year').value || '';
         
-        if(!cropper) { alert('Пожалуйста, загрузите фотографию!'); return; }
+        if(!cropper) { alert('Фото қажет!'); return; }
 
         const canvas = document.createElement('canvas');
         canvas.width = 1080;
@@ -141,7 +141,7 @@
             // Школа и Год (золотой цвет #c8a94a)
             ctx.fillStyle = '#c8a94a'; 
             ctx.font = 'bold 46px "Times New Roman", Georgia, serif';
-            ctx.fillText(`${school} '${year}`, 540, 1280);
+            ctx.fillText(`${school} ${year}`, 540, 1280);
 
             // Тонкий разделитель снизу
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
